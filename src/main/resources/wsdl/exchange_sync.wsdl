@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ws.mysecu.lu/generic/sync" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" name="SyncExchangeService" targetNamespace="http://ws.mysecu.lu/generic/sync">
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://ws.mysecu.lu/generic/sync" version="1.0">
+			<xs:element name="RequestInfo" type="tns:RequestInfoType"/>
+			<xs:element name="ResponseInfo" type="tns:ResponseInfoType"/> 
+		
+			<xs:simpleType name="IdentifierEntryType">
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[\w_-]{1,32}"/>
+				</xs:restriction>
+			</xs:simpleType>
+			
+			<xs:complexType name="RequestInfoType">
+				<xs:sequence minOccurs="0">
+					<xs:any namespace="##other" processContents="lax"/>
+				</xs:sequence>	
+				<xs:attribute name="modelUID" type="tns:IdentifierEntryType" use="required"/>							
+			</xs:complexType>
+  
+			<xs:complexType name="ResponseInfoType">				
+				<xs:sequence minOccurs="0">
+					<xs:any namespace="##other" processContents="lax"/>
+				</xs:sequence>
+			</xs:complexType>  
+		</xs:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="ResponseMessage">
+		<wsdl:part element="tns:ResponseInfo" name="parameters"/>    
+  </wsdl:message> 
+  <wsdl:message name="RequestMessage">
+		<wsdl:part element="tns:RequestInfo" name="parameters"/>    
+  </wsdl:message>
+  
+  <wsdl:portType name="SyncExchangePortType">
+		<wsdl:operation name="get">
+			<wsdl:input message="tns:RequestMessage" name="get"/>    
+			<wsdl:output message="tns:ResponseMessage" name="getResponse"/>    
+		</wsdl:operation>    
+  </wsdl:portType>
+  
+  <wsdl:binding name="SyncExchangeServiceSoapBinding" type="tns:SyncExchangePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="get">
+			<soap:operation soapAction="exchange" style="document"/>
+			<wsdl:input name="get">
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="getResponse">
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>   
+  </wsdl:binding>
+  
+  <wsdl:service name="SyncExchangeService">
+		<wsdl:port binding="tns:SyncExchangeServiceSoapBinding" name="SyncExchangePort">
+			<soap:address location="https://msigw01t/ws/soap/sync/exchange"/>
+		</wsdl:port>
+  </wsdl:service>
+  
+</wsdl:definitions>

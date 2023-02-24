@@ -1,0 +1,761 @@
+openapi: 3.0.1
+x-stoplight:
+  id: 2nizw5783pdvk
+info:
+  title: epione
+  version: '1.0'
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+  contact:
+    url: 'http://www.esante.lu'
+    email: info@esante.lu
+  termsOfService: 'http://www.esante.lu'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  '/practitioner/{eHealthId}/person/{ssn}/document/{idDocument}':
+    parameters:
+      - $ref: '#/components/parameters/eHealthId'
+      - $ref: '#/components/parameters/ssn'
+      - $ref: '#/components/parameters/idDocument'
+    get:
+      summary: Get an existing document
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '401':
+          description: Unauthorized - Missing identifier
+        '404':
+          description: Document not Found
+      operationId: getDocumentFromPerson
+      parameters: [ ]
+      description: Get an existing Memoire d'Honoraire
+    patch:
+      tags:
+        - document
+      summary: ''
+      operationId: deleteDocumentFromPerson
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '409':
+          description: Conflict
+      description: Cancel an existing document.  Cancellation of document is only possible by practitioner and staff member. Replace can be done by cancellation.
+      requestBody:
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+        description: New document replacing the old one.
+  '/practitioner/{eHealthId}/person/{ssn}/document':
+    parameters:
+      - $ref: '#/components/parameters/eHealthId'
+      - $ref: '#/components/parameters/ssn'
+    post:
+      tags:
+        - document
+      summary: Add new document
+      operationId: addDocument2Person
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      description: Add new invoice document (Memoire d'honoraire)
+      x-internal: false
+      requestBody:
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+        description: Body contains zip file. zip file must be compliant with CNS specification of MH
+  '/partner/{idPartner}/document/{idDocument}':
+    parameters:
+      - $ref: '#/components/parameters/idDocument'
+      - $ref: '#/components/parameters/idPartner'
+    get:
+      summary: Send document to partner
+      tags:
+        - tbd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: sendDocument2Partner
+      description: Send document to CNS
+      parameters: [ ]
+  '/person/{ssn}/consents':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+    get:
+      summary: get person consents
+      tags:
+        - consent
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/consent'
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/consent'
+      operationId: getConsentsFromPerson
+      description: Lists consents of patients. Only patient can do it.
+  '/person/{ssn}/consent/{consentType}':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+      - $ref: '#/components/parameters/consentType'
+    get:
+      summary: Get consent
+      tags:
+        - consent
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent'
+        '404':
+          description: Not Found
+      operationId: getConsentByTypeFromPerson
+      description: 'Get consent based on type (CNS, PARTNER, ESANTE, DR, MH)'
+      parameters: [ ]
+    delete:
+      summary: Delete consent
+      operationId: deleteConsentFromPerson
+      tags:
+        - consent
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+      description: Delete an existing Consent. Only patient and practitioner can do it. It is a logical delete of consent.
+  '/person/{ssn}/consent':
+    parameters:
+      - name: ssn
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '[0-9]{13}'
+          minLength: 13
+          maxLength: 13
+          example: '1897010112345'
+        description: patient identifier
+    post:
+      tags:
+        - consent
+      summary: Add consent
+      operationId: addConsent2Person
+      responses:
+        '200':
+          description: OK
+        '302':
+          description: Found
+        '403':
+          description: Forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/consent'
+      description: Add consent of a specific type. Only patient and practitioner can do it.
+      parameters: [ ]
+  '/person/{ssn}/documents':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+    get:
+      summary: Get documents list
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+      operationId: getDocumentsFromPerson
+      description: Get documents list of a patient. Only patient can do it.
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+  '/person/{ssn}/document/{idDocument}':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+      - $ref: '#/components/parameters/idDocument'
+    get:
+      summary: Get a document
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      operationId: getDocument
+      description: get a specific document from patient
+    put:
+      summary: Send document to CNS
+      operationId: sendDocument
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+      description: This service allows patient to trigger sending of MH to CNS. Status of MH document need to be RECEIVED in order to send to CNS.
+  '/practitioner/{eHealthId}/member/{identifier}':
+    parameters:
+      - $ref: '#/components/parameters/eHealthId'
+      - $ref: '#/components/parameters/identifier'
+    post:
+      tags:
+        - member
+      summary: Add member
+      operationId: addMember2Practitioner
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      description: Add member to practitioner team
+    delete:
+      summary: Remove member
+      operationId: deleteMemberFromPractitioner
+      tags:
+        - member
+      responses:
+        '200':
+          description: OK
+      description: Remove member authorization from practioner team
+    get:
+      tags:
+        - member
+      summary: Get member
+      operationId: getMemberFromPractitioner
+      responses:
+        '200':
+          description: OK
+      description: Verify if member tean exist for a specific practitioner
+  '/practitioner/{eHealthId}/members':
+    parameters:
+      - $ref: '#/components/parameters/eHealthId'
+    get:
+      summary: Get team members of a professional
+      tags:
+        - member
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/practitioner'
+      operationId: getMembersFromPractitioner
+      description: List team members of a specific professional
+  '/person/{ssn}/partner/{idPartner}':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+      - $ref: '#/components/parameters/idPartner'
+    get:
+      summary: Verify existing relation between person and partner
+      tags:
+        - tbd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+      operationId: getPartnerFromPerson
+      description: Verify if relation between person and partner exists
+    post:
+      tags:
+        - tbd
+      summary: Add relation between person and partner
+      operationId: addPartner2Person
+      responses:
+        '200':
+          description: OK
+      description: Add partner relation
+    delete:
+      tags:
+        - tbd
+      summary: Delete relation between person and partner
+      operationId: deletePartnerFromPerson
+      responses:
+        '200':
+          description: OK
+      description: Delete a relation between person and partner. Only person can do it.
+  '/cns/document/{idDocument}':
+    parameters:
+      - schema:
+          type: string
+        name: idDocument
+        in: path
+        required: true
+    get:
+      summary: Get document from UUID
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: getDocumentAsCns
+      description: This service allows CNS to get a document by UUID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { }
+  /person/info:
+    get:
+      summary: Get person information
+      operationId: getPersonInfo
+      description: |
+                  Get person additional information.
+                  Will return 403 if the user is not a patient.
+      tags:
+        - info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonInfo'
+  /person/partners:
+    get:
+      summary: Get partners list
+      tags:
+        - tbd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+        '401':
+          description: Unauthorized
+      operationId: getPartners
+      description: Get all avalaible partners list
+  '/person/{ssn}/partners':
+    parameters:
+      - schema:
+          type: string
+        name: ssn
+        in: path
+        required: true
+    get:
+      summary: Get list of partners for a person
+      tags:
+        - tbd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+        '401':
+          description: Unauthorized
+      operationId: getPartnersFromPerson
+      description: Get list of partners for a specific person
+  /admin/cns/export:
+    get:
+      summary: Export data
+      tags:
+        - admin
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      operationId: getData
+      description: ''
+    parameters: [ ]
+  /admin/cns/stat:
+    get:
+      summary: Generate statistics
+      tags:
+        - admin
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      operationId: getStatistics
+      parameters: [ ]
+    parameters: [ ]
+  '/admin/partner/{idpartner}':
+    get:
+      summary: Manage partners
+      tags:
+        - tbd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+      operationId: getPartner
+      description: get an existing partner
+    post:
+      tags:
+        - tbd
+      summary: ''
+      operationId: addPartner
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Partner'
+      description: Add partner to referential
+    delete:
+      tags:
+        - tbd
+      summary: delete partner
+      operationId: deletePartner
+      responses:
+        '200':
+          description: OK
+      description: Delete an existing partner to referential
+    parameters:
+      - schema:
+          type: string
+        name: idpartner
+        in: path
+        required: true
+  '/person/{ssn}/document/{idDocument}/pdf':
+    parameters:
+      - schema:
+          type: string
+        name: ssn
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: idDocument
+        in: path
+        required: true
+    get:
+      summary: get document as PDF
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Not Found
+      operationId: getDocumentAsPdf
+      description: Get document as PDF.
+components:
+  schemas:
+    consent:
+      description: ''
+      type: object
+      x-examples: { }
+      title: consent
+      properties:
+        type:
+          type: string
+          enum:
+            - CNS
+            - PARTNER
+            - ESANTE
+            - MH
+            - DR
+            - CNS_AUTO
+        startAt:
+          type: string
+          format: date-time
+          readOnly: true
+        endAt:
+          type: string
+          format: date-time
+        author:
+          type: string
+          readOnly: true
+        ssn:
+          type: string
+          minLength: 13
+          maxLength: 13
+          readOnly: true
+      required:
+        - type
+        - endAt
+    PersonInfo:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        ssn:
+          type: string
+    Document:
+      title: Document
+      type: object
+      properties:
+        isPaid:
+          type: boolean
+        price:
+          type: number
+        practitionerFirstname:
+          type: string
+        practitionerLastName:
+          type: string
+        uuid:
+          type: string
+          readOnly: true
+        memoireDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - SENT
+            - RECEIVED
+            - CANCELED
+            - CANCEL
+            - CANCEL_REPLACE
+            - TO_SEND
+          readOnly: true
+        docType:
+          type: string
+          enum:
+            - MH
+            - DR
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+        createAt:
+          type: string
+          format: date-time
+          readOnly: true
+        ssn:
+          type: string
+          minLength: 13
+          maxLength: 13
+          readOnly: true
+        file:
+          type: string
+          readOnly: true
+    file:
+      type: object
+      title: zipfile
+      format: binary
+      properties:
+        file:
+          type: string
+          format: binary
+    member:
+      title: member
+      type: object
+      properties:
+        identifier:
+          type: string
+          readOnly: true
+    practitioner:
+      title: practitioner
+      type: object
+      properties:
+        eHealthId:
+          type: string
+          minLength: 10
+          maxLength: 10
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/member'
+      required:
+        - eHealthId
+      x-examples: { }
+    statistics:
+      title: statistics
+      type: array
+      items:
+        $ref: '#/components/schemas/statistic'
+    statistic:
+      title: statistic
+      type: object
+      properties:
+        createdatyear:
+          type: integer
+        createdatmonth:
+          type: integer
+        practitioner:
+          type: string
+        total:
+          type: integer
+        sent:
+          type: integer
+        cancelled:
+          type: integer
+        sentatyear:
+          type: integer
+        sentatmonth:
+          type: integer
+    Partner:
+      title: Partner
+      x-stoplight:
+        id: jljo6vyjsvsdu
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - name
+  parameters:
+    ssn:
+      name: ssn
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '[0-9]{13}'
+        minLength: 13
+        maxLength: 13
+        example: '1897010112345'
+      description: patient identifier
+    eHealthId:
+      name: eHealthId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 10
+        maxLength: 10
+        pattern: '[0-9]{10}'
+        example: '6123456789'
+      description: practitioner identifier
+    idDocument:
+      name: idDocument
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Document identifier
+    idPartner:
+      name: idPartner
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Partner identifier
+    consentType:
+      name: consentType
+      in: path
+      schema:
+        type: string
+        enum:
+          - CNS
+          - PARTNER
+          - ESANTE
+          - DR
+          - MH
+          - CNS_AUTO
+      description: 'Consent type (MH, DR, CNS, ESANTE, CNS_AUTO)'
+      required: true
+    identifier:
+      name: identifier
+      in: path
+      required: true
+      schema:
+        type: string
+      description: member identifier
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+    size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+  securitySchemes:
+    key:
+      type: http
+      scheme: bearer
+      description: ''
+security:
+  - API Key - 1: [ ]
