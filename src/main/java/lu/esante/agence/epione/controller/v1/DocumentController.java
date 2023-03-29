@@ -237,9 +237,6 @@ public class DocumentController extends V1AbstractController implements Document
         if (doc.get().getDocumentStatus() != DocumentStatus.RECEIVED || !doc.get().getSsn().equals(ssn)) {
             throw new ForbiddenException("You cannot update this document");
         }
-        if (!doc.get().isPaid()) {
-            throw new ForbiddenException("You cannot update this document. MH is not paid and cannot be sent.");
-        }
         doc.get().setDocumentStatus(DocumentStatus.TO_SEND);
         service.save(doc.get());
         return new ResponseEntity<>(HttpStatus.OK);
