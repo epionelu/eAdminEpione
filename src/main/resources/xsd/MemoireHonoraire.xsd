@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	mySecu Module: MYSM_ESPINST
+	Document Model: 2020-CNS-DHN-MEMHON-REQ-V1
+	mySecu version: 1.1
+	Client version: 0.12
+	Validation date: 07-12-2020
+-->
+<xs:schema xmlns="http://www.secu.lu/ciss/cns" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.secu.lu/ciss/cns">
+	<xs:simpleType name="T_CodePays">
+		<xs:annotation>
+			<xs:documentation>Code pays</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="T_CodePostal">
+		<xs:annotation>
+			<xs:documentation>Code postal</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="15"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="T_NumeroTelephone">
+		<xs:annotation>
+			<xs:documentation>Type d'un numéro téléphone ou fax</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="24"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="memoireHonoraire" type="T_MemoireHonoraires">
+		<xs:annotation>
+			<xs:documentation>Root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="T_Accident">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un accident</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="numeroAccident" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro Accident</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_NumeroAccident"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dateAccident" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date Accident</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Acte">
+		<xs:annotation>
+			<xs:documentation>Type composé pour identifier un acte</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeActe">
+				<xs:annotation>
+					<xs:documentation>Code acte SANS préfixes ou suffixes</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="6"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="prefixActe" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Liste des characteristiques pour le code acte, i.e. la liste des suffixes ou préfixes appliqués à l'acte</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="suffixActe" minOccurs="0" maxOccurs="unbounded">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="libelle" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Adresse">
+		<xs:annotation>
+			<xs:documentation>Format pour une adresse</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension1" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Extension adresse 1</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Extension2" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Extension adresse 2</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="numeroRue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro de l'adresse</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="rue">
+				<xs:annotation>
+					<xs:documentation>Rue de l'adresse</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="80"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codePays" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code ISO pays</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePays"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codePostal" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code postale de l'adresse</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePostal"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="localite" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Localité</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="80"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_CodePrestataire">
+		<xs:annotation>
+			<xs:documentation>Format pour un code Fournisseur à 8 positions</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:maxInclusive value="99999999"/>
+			<xs:minInclusive value="10000000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="T_Controles">
+		<xs:annotation>
+			<xs:documentation>Type composé pour des contrôles</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="polytraumatisme" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:boolean"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="protheseProvisoire" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:boolean"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nouvelleGrossesse" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:boolean"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeMedecinOperateur" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Entete">
+		<xs:annotation>
+			<xs:documentation>Type composé pour une entête du mémoire d'honoraire</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UUID">
+				<xs:annotation>
+					<xs:documentation>Identifiant du document</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="36"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="facturier" type="T_Prestataire">
+				<xs:annotation>
+					<xs:documentation>Matricule de la personne proétégée</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="patient">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="T_Patient"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="assure" type="T_Assure"/>
+			<xs:element name="numeroMemoireHonoraires" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Référence Externe du mémoire d'honoraire</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dateMemoireHonoraires">
+				<xs:annotation>
+					<xs:documentation>Date du mémoire d'honoraires</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeHopital" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code de l'hôpital</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire">
+						<xs:minInclusive value="10000000"/>
+						<xs:maxInclusive value="99999999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeAssociation" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code de l'Association</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire">
+						<xs:minInclusive value="10000000"/>
+						<xs:maxInclusive value="99999999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nomHopitalAssociation" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nom de l'hôptial ou de l'association</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="numeroAdmission" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro d'admission</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="25"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="caisseComplementaire" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Caisse complémentaire</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="25"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Footer">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un base de page du mémoire d'honoraire</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="nombreDePage" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro de la page</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_IdentifiantUnique">
+		<xs:annotation>
+			<xs:documentation>Format d'identifiant unique pour un patient</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="13"/>
+			<xs:pattern value="[123456789]\p{Nd}{12}">
+				<xs:annotation>
+					<xs:documentation>Premier chiffre (1 à 9) suivi de 12 chiffres (0 à 9)</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="T_Libre">
+		<xs:annotation>
+			<xs:documentation>Type composé pour des textes libres</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="texteLibreVirement" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Texte libre pour les coodonnées bancaires /références virement...</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="2500"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="texteLibreMedical" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>commentaire du médecin (polytrauma,...)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="200"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_MemoireHonoraires">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un mémoire d'honoraire</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="entete" type="T_Entete">
+				<xs:annotation>
+					<xs:documentation>Entête du mémoire d'honoraires</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="prestation" type="T_Prestation" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Détail du mémoire d'honoraires</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="paiement" type="T_Paiement"/>
+			<xs:element name="libre" type="T_Libre"/>
+			<xs:element name="footer" type="T_Footer"/>
+			<xs:element name="indicationsSupplementaires" type="T_Controles"/>
+			<xs:element name="signature" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence minOccurs="0">
+						<xs:any namespace="##other" processContents="lax"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="document" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Document .pdf</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:base64Binary"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_Montant">
+		<xs:annotation>
+			<xs:documentation>Format pour un montant</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="T_NumeroAccident">
+		<xs:annotation>
+			<xs:documentation>Format pour un numéro accident</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[UL]\d{9}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="T_Paiement">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un paiement</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sousTotal">
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="report" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="acompteADeduire" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="aPayer">
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="devise">
+				<xs:annotation>
+					<xs:documentation>Code devise alphabétique selon ISO 4217 (ex. EUR)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_Devise"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="acquitte">
+				<xs:simpleType>
+					<xs:restriction base="xs:boolean"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dateAcquittement" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Patient">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un patient</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="matricule">
+					<xs:annotation>
+						<xs:documentation>Matricule du patient</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="T_IdentifiantUnique"/>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="dateNaissance">
+					<xs:annotation>
+						<xs:documentation>Date naissance du patient</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:date"/>
+					</xs:simpleType>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="caissePrincipale" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Caisse principale: CNS / CMFEP / CMFEC / EMCFL / Autre</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CaissePrincipale"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nom du Paitient</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="150"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="prenom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Prénom du Patient</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="accident" type="T_Accident" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Informations sur l'accident</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Periode">
+		<xs:annotation>
+			<xs:documentation>Type composé pour une periode de l'acte</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="dateDebut">
+				<xs:annotation>
+					<xs:documentation>Date Début</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="heureDebut" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Heure Début</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:time"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dateFin" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date Fin</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="heureFin" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Heure Fin</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:time"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Prestataire">
+		<xs:annotation>
+			<xs:documentation>Format pour un prestataire</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="codePrestataire">
+				<xs:annotation>
+					<xs:documentation>Code médecin (prestataire facturier)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nom">
+				<xs:annotation>
+					<xs:documentation>Nom</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="150"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="prenom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Prénom</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="titre" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation source="Titre médecin">Titre</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="adresse" type="T_Adresse">
+				<xs:annotation>
+					<xs:documentation>Adresse Prescripteur</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="numeroTelephone" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro téléphone</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_NumeroTelephone"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="numeroFax" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro fax</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_NumeroTelephone"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="email" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Email</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="T_Prestation">
+		<xs:annotation>
+			<xs:documentation>Type composé pour une prestation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="numeroLigne">
+				<xs:annotation>
+					<xs:documentation>Numéro de la ligne</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeH" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code H / 1 = hospitalisation 1ère classe / 2 = hospitalisation deuxième classe / A = Ambulatoire</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodeHopital"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="lieu" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Lieu</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeExecutant" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code médecin exécutant</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="periode" type="T_Periode">
+				<xs:annotation>
+					<xs:documentation>Période</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dent" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Dent</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="acte" type="T_Acte">
+				<xs:annotation>
+					<xs:documentation>Code Acte</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nombre">
+				<xs:annotation>
+					<xs:documentation>Nombre</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="99"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="montantBrut">
+				<xs:annotation>
+					<xs:documentation>Montant brut</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="partPersonelle" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Montant de la part personnelle</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_Montant"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codePrescripteur" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Code prescripteur</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="numeroTitreOrdonnance" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numéro du titre ou de l'ordonnance</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="36"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="typeSeance" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>type de la seance</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="numeroSeance" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>numero de la seance</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codeOperateur" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>code Opérateur</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="T_CodePrestataire"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_Devise">
+		<xs:annotation>
+			<xs:documentation>Type pour une devise</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="T_CaissePrincipale">
+		<xs:annotation>
+			<xs:documentation>Type pour la caisse principale: CNS / CMFEP / CMFEC / EMCFL / Autre</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="T_Assure">
+		<xs:sequence>
+			<xs:element name="nom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nom de l'assuré</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="150"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="prenom" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Prénom de l'assuré</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="adresse" type="T_Adresse"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="T_CodeHopital">
+		<xs:annotation>
+			<xs:documentation>Type de la classe hôpital</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
