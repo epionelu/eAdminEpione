@@ -247,6 +247,27 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/size'
+  '/person/{ssn}/cns/documents':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+    get:
+      summary: Get documents list from CNS
+      tags:
+        - cns
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+      operationId: getCNSDocumentsFromPerson
+      description: Get documents list of a patient. Only patient can do it.
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
   '/person/{ssn}/document/{idDocument}':
     parameters:
       - $ref: '#/components/parameters/ssn'
