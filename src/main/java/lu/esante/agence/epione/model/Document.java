@@ -26,6 +26,8 @@ public class Document {
 
     private String mhNumber;
 
+    private String mySecuId;
+
     private OffsetDateTime sentAt;
 
     private OffsetDateTime createdAt;

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by  (Centre Commun de la Sécurité Sociale) -->
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by  (Centre Commun de la Sécurité
+Sociale) -->
 <!--
 	mySecu Module: MYSM_ESPINST
 	Document Model: 2020-CNS-DHN-MEMHON-REQ-V1
-	mySecu version: 1.1
+	mySecu version:
+1.1
 	Client version: 0.12
 	Validation date: 07-12-2020
 -->
-<xs:schema xmlns="http://www.secu.lu/ciss/cns" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.secu.lu/ciss/cns">
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+	xmlns="http://www.secu.lu/ciss/cns" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.secu.lu/ciss/cns">
 	<xs:element name="annulationMemoireHonoraire" type="T_AnnulationMemoireHonoraires">
 		<xs:annotation>
 			<xs:documentation>Root element</xs:documentation>
@@ -18,23 +22,23 @@
 			<xs:documentation>Type composé pour un mémoire d'honoraire</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="UUID">
+			<xs:element name="UUIDPrestataire">
 				<xs:annotation>
-					<xs:documentation>Identifiant du document</xs:documentation>
+					<xs:documentation>Identifiant provenant du prestatire qui a envoyé le document</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="36"/>
+						<xs:length value="36" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="UUIDDocumentRemplacant">
+			<xs:element name="UUIDDocumentRemplacant" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Identifiant du document remplacant</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="36"/>
+						<xs:length value="36" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -44,22 +48,21 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="36"/>
+						<xs:length value="36" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="TypeAnnulation">
 				<xs:annotation>
-					<xs:documentation>Type d'annulation: 
-1 Annulation simple
-2 Annulation avec nouveau dépôt</xs:documentation>
+					<xs:documentation>Type d'annulation: 1 Annulation simple 2 Annulation avec
+						nouveau dépôt</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="2"/>
-						<xs:enumeration value="1"/>
-						<xs:enumeration value="2"/>
+						<xs:minInclusive value="1" />
+						<xs:maxInclusive value="2" />
+						<xs:enumeration value="1" />
+						<xs:enumeration value="2" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -69,15 +72,15 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="200"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="200" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="Signature" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence minOccurs="0">
-						<xs:any namespace="##other" processContents="lax"/>
+						<xs:any namespace="##other" processContents="lax" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

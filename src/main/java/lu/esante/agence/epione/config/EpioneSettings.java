@@ -41,9 +41,6 @@ public class EpioneSettings {
     @NotNull
     private Security security;
 
-    private boolean isMySecuActive = true;
-
-    @NotBlank
-    private String cnsFileDirectory;
+    private Boolean isMySecuActive;
 
 }

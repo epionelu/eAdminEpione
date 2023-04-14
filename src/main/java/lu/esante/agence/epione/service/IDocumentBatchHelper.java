@@ -1,15 +1,28 @@
 package lu.esante.agence.epione.service;
 
+import java.util.List;
+import java.util.UUID;
+
+import lu.esante.agence.epione.exception.IllegalOperationException;
 import lu.esante.agence.epione.model.Document;
 import lu.esante.agence.epione.model.DocumentStatus;
 
-import java.util.List;
-
 public interface IDocumentBatchHelper {
 
-    List<Document> getAll();
+    List<Document> getAllReceived();
 
-    void acknowledgeSend(Document document);
+    List<Document> getAllReimbursementAsked();
 
-    void batchChangeStatus(String ssn, DocumentStatus initial, DocumentStatus target);
+    List<Document> getAllCancelationAsked();
+
+    Document saveHelper(Document document);
+
+    Document acknowledgeSend(Document document, String mySecuId) throws IllegalOperationException;
+
+    void updateCnsAuto();
+
+    void updateMySecuIdOnly(UUID documentid, String mySecuId);
+
+    void updateIfStatusEquals(Document document, DocumentStatus oldStatus, DocumentStatus newStatus);
+
 }

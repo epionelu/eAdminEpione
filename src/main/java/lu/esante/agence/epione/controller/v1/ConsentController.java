@@ -1,5 +1,21 @@
 package lu.esante.agence.epione.controller.v1;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.openapitools.api.ConsentApi;
+import org.openapitools.model.ConsentDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RestController;
+
 import lu.esante.agence.epione.auth.Roles;
 import lu.esante.agence.epione.controller.V1AbstractController;
 import lu.esante.agence.epione.exception.BadRequestException;
@@ -7,48 +23,101 @@ import lu.esante.agence.epione.exception.ForbiddenException;
 import lu.esante.agence.epione.exception.InvalidConsentTypeException;
 import lu.esante.agence.epione.model.Consent;
 import lu.esante.agence.epione.model.ConsentType;
-import lu.esante.agence.epione.model.DocumentStatus;
 import lu.esante.agence.epione.service.IConsentService;
-import lu.esante.agence.epione.service.IDocumentBatchHelper;
 import lu.esante.agence.epione.service.IIdentityService;
-import org.openapitools.api.ConsentApi;
-import org.openapitools.model.ConsentDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ConsentController extends V1AbstractController implements ConsentApi {
 
     private IConsentService service;
     private IIdentityService identity;
-    private IDocumentBatchHelper helper;
 
     @Autowired
-    public ConsentController(IConsentService service, IIdentityService identity, IDocumentBatchHelper helper) {
+    public ConsentController(IConsentService service, IIdentityService identity) {
         this.service = service;
         this.identity = identity;
-        this.helper = helper;
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('PRACTITIONER') or hasAnyAuthority('PATIENT')")
-    public ResponseEntity<Void> _addConsent2Person(@Pattern(regexp = "[0-9]{13}") @Size(min = 13, max = 13) String ssn,
+    @PreAuthorize("hasAnyAuthority('PATIENT')")
+    public ResponseEntity<Void> _addConsent2Person(@Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn,
             @Valid ConsentDto consentDto) throws Exception {
         checksPatientNameEqualsSsn(ssn);
-        if (identity.hasRole(Roles.PRACTITIONER) && consentDto.getType() != ConsentDto.TypeEnum.MH) {
+        createConsent(ssn, consentDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
+    public ResponseEntity<Void> _addConsent2PersonPractitioner(
+            @Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn, @Valid ConsentDto consentDto)
+            throws Exception {
+        if (consentDto.getType() != ConsentDto.TypeEnum.MH) {
             throw new ForbiddenException("You cannot create this kind of consent");
         }
+        createConsent(ssn, consentDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PATIENT')")
+    public ResponseEntity<Void> _deleteConsentFromPerson(
+            @Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn, String consentType) throws Exception {
+        checksPatientNameEqualsSsn(ssn);
+        Optional<Consent> opt = service.getBySsnAndConsentType(ssn, map(ConsentDto.TypeEnum.valueOf(consentType)));
+        if (!opt.isEmpty()) {
+            service.delete(opt.get());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PATIENT')")
+    public ResponseEntity<ConsentDto> _getConsentByTypeFromPerson(
+            @Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn, String consentType) throws Exception {
+        checksPatientNameEqualsSsn(ssn);
+        Optional<Consent> opt = getConsentTypeByType(ssn, consentType);
+        if (opt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(map(opt.get()), HttpStatus.OK);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
+    public ResponseEntity<ConsentDto> _getConsentByTypeFromPersonPractitioner(
+            @Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn, String consentType) throws Exception {
+        Optional<Consent> opt = getConsentTypeByType(ssn, consentType);
+        if (opt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(map(opt.get()), HttpStatus.OK);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PATIENT')")
+    public ResponseEntity<List<ConsentDto>> _getConsentsFromPerson(
+            @Pattern(regexp = "\\d{13}") @Size(min = 13, max = 13) String ssn) throws Exception {
+        checksPatientNameEqualsSsn(ssn);
+        List<Consent> consents = service.getBySsn(ssn);
+        List<ConsentDto> res = new ArrayList<>();
+        for (Consent consent : consents) {
+            res.add(map(consent));
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    // Check that patient accesses only his resources
+    private void checksPatientNameEqualsSsn(String ssn) throws ForbiddenException {
+        if (identity.hasRole(Roles.PATIENT) && !identity.getName().equals(ssn)) {
+            throw new ForbiddenException("You are not allow to consult these resource");
+        }
+    }
+
+    private void createConsent(String ssn, ConsentDto consentDto) throws InvalidConsentTypeException {
         Optional<Consent> opt = service.getBySsnAndConsentType(ssn, map(consentDto.getType()));
         Consent consent = null;
         if (opt.isEmpty()) {
@@ -68,56 +137,6 @@ public class ConsentController extends V1AbstractController implements ConsentAp
         consent.setAuthor(identity.getName());
         consent.setEndAt(consentDto.getEndAt());
         service.save(consent);
-
-        // This feature allow to change previous documents to received when adding
-        // CNS_AUTO consent
-        // Not used at the moment
-
-        // if (consent.getConsentType() == ConsentType.CNS_AUTO) {
-        // helper.batchChangeStatus(ssn, DocumentStatus.RECEIVED,
-        // DocumentStatus.TO_SEND);
-        // }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('PATIENT')")
-    public ResponseEntity<Void> _deleteConsentFromPerson(
-            @Pattern(regexp = "[0-9]{13}") @Size(min = 13, max = 13) String ssn, String consentType) throws Exception {
-        checksPatientNameEqualsSsn(ssn);
-        Optional<Consent> opt = service.getBySsnAndConsentType(ssn, map(ConsentDto.TypeEnum.valueOf(consentType)));
-        if (!opt.isEmpty()) {
-            service.delete(opt.get());
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('PRACTITIONER') or hasAnyAuthority('PATIENT')")
-    public ResponseEntity<ConsentDto> _getConsentByTypeFromPerson(
-            @Pattern(regexp = "[0-9]{13}") @Size(min = 13, max = 13) String ssn, String consentType) throws Exception {
-
-        checksPatientNameEqualsSsn(ssn);
-        Optional<Consent> opt = service.getBySsnAndConsentType(ssn, map(ConsentDto.TypeEnum.valueOf(consentType)));
-        if (opt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(map(opt.get()), HttpStatus.OK);
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('PATIENT')")
-    public ResponseEntity<List<ConsentDto>> _getConsentsFromPerson(
-            @Pattern(regexp = "[0-9]{13}") @Size(min = 13, max = 13) String ssn) throws Exception {
-        checksPatientNameEqualsSsn(ssn);
-        List<Consent> consents = service.getBySsn(ssn);
-        List<ConsentDto> res = new ArrayList<>();
-        for (Consent consent : consents) {
-            res.add(map(consent));
-        }
-
-        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     private static ConsentType map(ConsentDto.TypeEnum type) throws InvalidConsentTypeException {
@@ -160,11 +179,8 @@ public class ConsentController extends V1AbstractController implements ConsentAp
         return res;
     }
 
-    // Check that patient accesses only his resources
-    private void checksPatientNameEqualsSsn(String ssn) throws ForbiddenException {
-        if (identity.hasRole(Roles.PATIENT) && !identity.getName().equals(ssn)) {
-            throw new ForbiddenException("You are not allow to consult these resource");
-        }
+    private Optional<Consent> getConsentTypeByType(String ssn, String consentType) throws InvalidConsentTypeException {
+        return service.getBySsnAndConsentType(ssn, map(ConsentDto.TypeEnum.valueOf(consentType)));
     }
 
 }

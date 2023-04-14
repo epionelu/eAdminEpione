@@ -32,7 +32,6 @@ public class MpiClient {
 
     private static final String RESPONSE_IS_NULL_ERROR = "Mpi response is null";
 
-
     public Patient getPatientById(String identifier) throws MpiCriticalException, MpiErrorException {
         Parameters p = buildPatientSearch(identifier);
         UUID uuid = UUID.randomUUID();

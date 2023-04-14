@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<soapenv:Envelope  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
   <soapenv:Header>
     <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
       TEMPLATE_VAR_ServiceMetier_BinarySecurityToken
@@ -29,7 +29,7 @@
     </wsse:Security>
   </soapenv:Header>
   <soapenv:Body wsu:Id="id-1" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
-    <sync:RequestInfo xmlns:ns2="http://www.secu.lu/ciss/cns" xmlns:sync="http://ws.mysecu.lu/generic/sync"  modelUID="2020-CNS-DHN-MEMHON-V1">
+    <sync:RequestInfo xmlns:ns2="http://www.secu.lu/ciss/cns" xmlns:sync="http://ws.mysecu.lu/generic/sync" modelUID="INF_MSG_ID">
         TEMPLATE_VAR_ServiceMetier_MH
     </sync:RequestInfo>
   </soapenv:Body>

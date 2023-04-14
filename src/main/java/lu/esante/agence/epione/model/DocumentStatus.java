@@ -2,9 +2,10 @@ package lu.esante.agence.epione.model;
 
 public enum DocumentStatus {
     RECEIVED,
-    CANCEL,
-    CANCELED,
-    CANCEL_REPLACE,
-    TO_SEND,
     SENT,
+    REIMBURSEMENT_ASKED,
+    REIMBURSEMENT_SENT,
+    CANCEL_ASKED,
+    CANCELED,
+    CANCEL_REPLACED,
 }

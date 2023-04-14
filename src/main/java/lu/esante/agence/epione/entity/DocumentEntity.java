@@ -37,6 +37,8 @@ public class DocumentEntity {
     private OffsetDateTime sentAt;
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
+    @Column(name = "my_secu_id")
+    private String mySecuId;
     @JoinColumn(name = "document_type", referencedColumnName = "id")
     @OneToOne
     private DocumentTypeEntity documentType;

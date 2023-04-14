@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (x64) (http://www.altova.com) by  (Centre Commun de la Sécurité Sociale) -->
+<!--
+	mySecu Module: MYSM_ESPINST
+	Document Model: 2020-CNS-DHN-MEMHON-REQ-V1
+	mySecu version: 1.1
+	Client version: 0.12
+	Validation date: 07-12-2020
+-->
+<xs:schema xmlns="http://www.secu.lu/ciss/cns" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.secu.lu/ciss/cns">
+	<xs:element name="memoireHonorairesRetour"/>
+	<xs:complexType name="T_memoireHonorairesRetour">
+		<xs:annotation>
+			<xs:documentation>Type du mémoire honoraire retour</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="UuidPrestataire"/>
+			<xs:element ref="UuidSecu"/>
+			<xs:element name="anomalies" type="T_Anomalie" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Motifs de contestations facture</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="UuidPrestataire">
+		<xs:annotation>
+			<xs:documentation>Identifiant provenant du prestatire qui a envoyé le document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="UuidSecu">
+		<xs:annotation>
+			<xs:documentation>Identifiant provenant du CCSS document (à utilser pour annulation ou confimation)</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:complexType name="T_Anomalie">
+		<xs:annotation>
+			<xs:documentation>Type composé pour un message retour au prestataire sur base d'une anomalie</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string" nillable="false">
+				<xs:annotation>
+					<xs:documentation>Type de message</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="code" type="xs:string" nillable="false">
+				<xs:annotation>
+					<xs:documentation>Code du motif de contestation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="motif" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Motif optionnel pour les anomalies qui disposent d'un motif non-standard</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

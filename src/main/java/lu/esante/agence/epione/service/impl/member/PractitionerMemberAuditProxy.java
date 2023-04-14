@@ -64,6 +64,6 @@ public class PractitionerMemberAuditProxy implements IPractitionerMemberService 
     @Transactional
     public void delete(PractitionerMember practitionerMember) {
         trace.write(ENTITY_TYPE, "DELETE", practitionerMember.getId());
-        service.save(practitionerMember);
+        service.delete(practitionerMember);
     }
 }

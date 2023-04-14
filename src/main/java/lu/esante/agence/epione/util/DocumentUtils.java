@@ -4,8 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.Optional;
@@ -21,17 +23,36 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import lu.esante.agence.epione.exception.BadRequestException;
 import lu.esante.agence.epione.model.Document;
 import lu.esante.agence.epione.model.DocumentStatus;
 import lu.esante.agence.epione.model.DocumentType;
+import lu.esante.agence.epione.model.cns.TAnnulationMemoireHonoraires;
+import lu.esante.agence.epione.model.cns.TConsentement;
 import lu.esante.agence.epione.model.cns.TMemoireHonoraires;
 
 public class DocumentUtils {
@@ -41,7 +62,7 @@ public class DocumentUtils {
     }
 
     private static final String CNS_FILE_PATTERN = "F90\\d{6}[2-9]\\d{3}[0-1]\\d_MED_MHM_\\d{3}_[0-3]\\d01_[\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}.xml";
-    private static final String XSD_PATH = "xsd/MemoireHonoraire.xsd";
+    private static final String XSD_PATH = "xsd/2022_CNS_MEMHON_DEPOT-REQ-V1.xsd";
     private static Schema validationSchema;
 
     public static Optional<Document> parseZipFile(byte[] zipFile, String eHealthId, String author)
@@ -167,25 +188,85 @@ public class DocumentUtils {
     }
 
     public static byte[] convertFromB64(byte[] source) throws UnsupportedEncodingException {
-        byte[] decodedString = Base64.getDecoder().decode(new String(source).getBytes("UTF-8"));
-        return decodedString;
-
+        return Base64.getDecoder().decode(new String(source).getBytes(StandardCharsets.UTF_8.name()));
     }
 
     public static String getMhFragment(byte[] file) throws JAXBException, SAXException {
         ByteArrayInputStream input = new ByteArrayInputStream(file);
         TMemoireHonoraires memoire = getMemoireHonoraireFromByteArray(input);
+        return toFragment(memoire, "memoireHonoraire");
+    }
+
+    public static String getConsentFragment(String mySecuId, String ssn) throws JAXBException, SAXException {
+        TConsentement data = new TConsentement();
+        data.setIdenitifiantUnique(ssn);
+        data.setUUIDSecu(mySecuId);
+        return toFragment(data, "consentement");
+    }
+
+    public static String getAnnulationFragment(String mySecuId, Optional<String> replacerId, String uuidPrestataire)
+            throws JAXBException, SAXException {
+        TAnnulationMemoireHonoraires data = new TAnnulationMemoireHonoraires();
+        data.setUUIDDocumentAnnule(mySecuId);
+        data.setUUIDPrestataire(uuidPrestataire);
+        data.setMotif("Not Implemented");
+        if (replacerId.isEmpty()) {
+            data.setTypeAnnulation(1);
+        } else {
+            data.setTypeAnnulation(2);
+            data.setUUIDDocumentRemplacant(replacerId.get());
+        }
+
+        return toFragment(data, "annulationMemoireHonoraire");
+    }
+
+    public static <T1> String toFragment(T1 xmlObject, String qname) throws JAXBException, SAXException {
         StringWriter sw = new StringWriter();
-        JAXBContext jaxbContext = JAXBContext.newInstance(TMemoireHonoraires.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(xmlObject.getClass());
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-        JAXBElement<TMemoireHonoraires> jaxbElement = new JAXBElement<TMemoireHonoraires>(
-                new QName("http://www.secu.lu/ciss/cns", "memoireHonoraire", "ms2"),
-                TMemoireHonoraires.class,
-                memoire);
+        JAXBElement<T1> jaxbElement = new JAXBElement<>(
+                new QName("http://www.secu.lu/ciss/cns", qname, "ms2"),
+                (Class<T1>) xmlObject.getClass(),
+                xmlObject);
         jaxbMarshaller.marshal(jaxbElement, sw);
-        String xmlString = sw.toString();
-        return xmlString;
+        return sw.toString();
+    }
+
+    public static String extractXmlBody(String xml)
+            throws SAXException, IOException, XPathExpressionException, ParserConfigurationException,
+            IllegalArgumentException, TransformerFactoryConfigurationError, TransformerException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc = builder.parse(new InputSource(new StringReader(xml)));
+        removeTextNodes(doc);
+        Node body = doc.getLastChild().getLastChild().getFirstChild().getLastChild();
+        return nodeToString(body);
+    }
+
+    private static void removeTextNodes(org.w3c.dom.Document doc) throws XPathExpressionException {
+        XPathFactory xpathFactory = XPathFactory.newInstance();
+        // XPath to find empty text nodes.
+        XPathExpression xpathExp = xpathFactory.newXPath().compile(
+                "//text()[normalize-space(.) = '']");
+        NodeList emptyTextNodes = (NodeList) xpathExp.evaluate(doc, XPathConstants.NODESET);
+        // Remove each empty text node from document.
+        for (int i = 0; i < emptyTextNodes.getLength(); i++) {
+            Node emptyTextNode = emptyTextNodes.item(i);
+            emptyTextNode.getParentNode().removeChild(emptyTextNode);
+        }
+    }
+
+    private static String nodeToString(Node node)
+            throws TransformerFactoryConfigurationError, IllegalArgumentException, TransformerException {
+        StringWriter sw = new StringWriter();
+
+        Transformer t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        t.transform(new DOMSource(node), new StreamResult(sw));
+
+        return sw.toString();
     }
 
 }

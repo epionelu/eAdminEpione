@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+	xmlns="http://www.secu.lu/ciss/cns" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.secu.lu/ciss/cns">
+	<xs:element name="consentement" type="TConsentement">
+		<xs:annotation>
+			<xs:documentation>Root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="TConsentement">
+		<xs:annotation>
+			<xs:documentation>Type composé pour la confirmation du remboursement</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UUIDSecu">
+				<xs:annotation>
+					<xs:documentation>Identifiant secu du document</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="36" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="idenitifiantUnique">
+				<xs:annotation>
+					<xs:documentation>Identifiant unique de la personne</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

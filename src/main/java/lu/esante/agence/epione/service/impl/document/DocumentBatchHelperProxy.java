@@ -1,5 +1,6 @@
 package lu.esante.agence.epione.service.impl.document;
 
+import lu.esante.agence.epione.exception.IllegalOperationException;
 import lu.esante.agence.epione.model.Document;
 import lu.esante.agence.epione.model.DocumentStatus;
 import lu.esante.agence.epione.service.IDocumentBatchHelper;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 public class DocumentBatchHelperProxy implements IDocumentBatchHelper {
 
@@ -21,21 +23,50 @@ public class DocumentBatchHelperProxy implements IDocumentBatchHelper {
     }
 
     @Override
-    public List<Document> getAll() {
-        return service.getAll();
-    }
-
-    @Override
     @Transactional
-    public void acknowledgeSend(Document document) {
+    public Document acknowledgeSend(Document document, String mySecuId) throws IllegalOperationException {
         trace.write("DOCUMENT", "SEND", document.getId(), "EPIONE", "[EPIONE]");
-        service.acknowledgeSend(document);
+        return service.acknowledgeSend(document, mySecuId);
+
     }
 
     @Override
-    @Transactional
-    public void batchChangeStatus(String ssn, DocumentStatus initial, DocumentStatus target) {
-        trace.write("DOCUMENT", "CNS_AUTO");
-        service.batchChangeStatus(ssn, initial, target);
+    public List<Document> getAllReceived() {
+        return service.getAllReceived();
     }
+
+    @Override
+    public List<Document> getAllReimbursementAsked() {
+        return service.getAllReimbursementAsked();
+    }
+
+    @Override
+    public List<Document> getAllCancelationAsked() {
+        return service.getAllCancelationAsked();
+    }
+
+    @Override
+    public void updateCnsAuto() {
+        trace.write("DOCUMENT", "UPDATE CNS_AUTO");
+        service.updateCnsAuto();
+
+    }
+
+    @Override
+    public void updateMySecuIdOnly(UUID documentid, String mySecuId) {
+        service.updateMySecuIdOnly(documentid, mySecuId);
+
+    }
+
+    @Override
+    public void updateIfStatusEquals(Document document, DocumentStatus oldStatus, DocumentStatus newStatus) {
+        service.updateIfStatusEquals(document, oldStatus, newStatus);
+
+    }
+
+    @Override
+    public Document saveHelper(Document document) {
+        return service.saveHelper(document);
+    }
+
 }

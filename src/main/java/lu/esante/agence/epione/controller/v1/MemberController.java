@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
 import lu.esante.agence.epione.controller.V1AbstractController;
 import lu.esante.agence.epione.exception.ForbiddenException;
 import lu.esante.agence.epione.model.PractitionerMember;
@@ -22,6 +23,7 @@ import lu.esante.agence.epione.service.IIdentityService;
 import lu.esante.agence.epione.service.IPractitionerMemberService;
 
 @RestController
+@Slf4j
 public class MemberController extends V1AbstractController implements MemberApi {
 
     IPractitionerMemberService service;
@@ -36,7 +38,7 @@ public class MemberController extends V1AbstractController implements MemberApi 
     @Override
     @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
     public ResponseEntity<Void> _addMember2Practitioner(
-            @Pattern(regexp = "[0-9]{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
+            @Pattern(regexp = "\\d{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
             throws Exception {
 
         if (!this.identity.getName().equals(eHealthId)) {
@@ -45,7 +47,7 @@ public class MemberController extends V1AbstractController implements MemberApi 
 
         Optional<PractitionerMember> opt = service.getByEHealthIdAndMemberId(eHealthId, identifier);
         if (!opt.isEmpty()) {
-            // TODO: Throw exception
+            log.warn("Trying to add a member which is already member.");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         PractitionerMember member = new PractitionerMember();
@@ -59,7 +61,7 @@ public class MemberController extends V1AbstractController implements MemberApi 
     @Override
     @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
     public ResponseEntity<Void> _deleteMemberFromPractitioner(
-            @Pattern(regexp = "[0-9]{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
+            @Pattern(regexp = "\\d{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
             throws Exception {
         if (!this.identity.getName().equals(eHealthId)) {
             throw new ForbiddenException("You cannot access this resource");
@@ -77,7 +79,7 @@ public class MemberController extends V1AbstractController implements MemberApi 
     @Override
     @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
     public ResponseEntity<Void> _getMemberFromPractitioner(
-            @Pattern(regexp = "[0-9]{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
+            @Pattern(regexp = "\\d{10}") @Size(min = 10, max = 10) String eHealthId, String identifier)
             throws Exception {
         if (!this.identity.getName().equals(eHealthId)) {
             throw new ForbiddenException("You cannot access this resource");
@@ -93,7 +95,7 @@ public class MemberController extends V1AbstractController implements MemberApi 
     @Override
     @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
     public ResponseEntity<PractitionerDto> _getMembersFromPractitioner(
-            @Pattern(regexp = "[0-9]{10}") @Size(min = 10, max = 10) String eHealthId) throws Exception {
+            @Pattern(regexp = "\\d{10}") @Size(min = 10, max = 10) String eHealthId) throws Exception {
         if (!this.identity.getName().equals(eHealthId)) {
             throw new ForbiddenException("You cannot access this resource");
         }

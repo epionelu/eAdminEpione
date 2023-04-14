@@ -1,9 +1,7 @@
 openapi: 3.0.1
-x-stoplight:
-  id: 2nizw5783pdvk
 info:
   title: epione
-  version: '1.0'
+  version: '3.0.0'
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
@@ -88,28 +86,7 @@ paths:
               type: string
               format: binary
         description: Body contains zip file. zip file must be compliant with CNS specification of MH
-  '/partner/{idPartner}/document/{idDocument}':
-    parameters:
-      - $ref: '#/components/parameters/idDocument'
-      - $ref: '#/components/parameters/idPartner'
-    get:
-      summary: Send document to partner
-      tags:
-        - tbd
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Document'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      operationId: sendDocument2Partner
-      description: Send document to CNS
-      parameters: [ ]
+  
   '/person/{ssn}/consents':
     parameters:
       - $ref: '#/components/parameters/ssn'
@@ -167,6 +144,26 @@ paths:
         '404':
           description: Not Found
       description: Delete an existing Consent. Only patient and practitioner can do it. It is a logical delete of consent.
+  '/practitioner/{ssn}/consent/{consentType}':
+    parameters:
+      - $ref: '#/components/parameters/ssn'
+      - $ref: '#/components/parameters/consentType'
+    get:
+      summary: Get consent
+      tags:
+        - consent
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent'
+        '404':
+          description: Not Found
+      operationId: getConsentByTypeFromPersonPractitioner
+      description: 'Get consent based on type (CNS, PARTNER, ESANTE, DR, MH)'
+      parameters: [ ]
   '/person/{ssn}/consent':
     parameters:
       - name: ssn
@@ -174,7 +171,7 @@ paths:
         required: true
         schema:
           type: string
-          pattern: '[0-9]{13}'
+          pattern: '\d{13}'
           minLength: 13
           maxLength: 13
           example: '1897010112345'
@@ -196,7 +193,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/consent'
-      description: Add consent of a specific type. Only patient and practitioner can do it.
+      description: Add consent of a specific type.
+      parameters: [ ]
+  '/practitioner/{ssn}/consent':
+    parameters:
+      - name: ssn
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '\d{13}'
+          minLength: 13
+          maxLength: 13
+          example: '1897010112345'
+        description: patient identifier
+    post:
+      tags:
+        - consent
+      summary: Add consent
+      operationId: addConsent2PersonPractitioner
+      responses:
+        '200':
+          description: OK
+        '302':
+          description: Found
+        '403':
+          description: Forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/consent'
+      description: Add consent of a specific type.
       parameters: [ ]
   '/person/{ssn}/documents':
     parameters:
@@ -296,71 +324,6 @@ paths:
                 $ref: '#/components/schemas/practitioner'
       operationId: getMembersFromPractitioner
       description: List team members of a specific professional
-  '/person/{ssn}/partner/{idPartner}':
-    parameters:
-      - $ref: '#/components/parameters/ssn'
-      - $ref: '#/components/parameters/idPartner'
-    get:
-      summary: Verify existing relation between person and partner
-      tags:
-        - tbd
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Partner'
-      operationId: getPartnerFromPerson
-      description: Verify if relation between person and partner exists
-    post:
-      tags:
-        - tbd
-      summary: Add relation between person and partner
-      operationId: addPartner2Person
-      responses:
-        '200':
-          description: OK
-      description: Add partner relation
-    delete:
-      tags:
-        - tbd
-      summary: Delete relation between person and partner
-      operationId: deletePartnerFromPerson
-      responses:
-        '200':
-          description: OK
-      description: Delete a relation between person and partner. Only person can do it.
-  '/cns/document/{idDocument}':
-    parameters:
-      - schema:
-          type: string
-        name: idDocument
-        in: path
-        required: true
-    get:
-      summary: Get document from UUID
-      tags:
-        - document
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Document'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      operationId: getDocumentAsCns
-      description: This service allows CNS to get a document by UUID
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: { }
   /person/info:
     get:
       summary: Get person information
@@ -376,124 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonInfo'
-  /person/partners:
-    get:
-      summary: Get partners list
-      tags:
-        - tbd
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Partner'
-        '401':
-          description: Unauthorized
-      operationId: getPartners
-      description: Get all avalaible partners list
-  '/person/{ssn}/partners':
-    parameters:
-      - schema:
-          type: string
-        name: ssn
-        in: path
-        required: true
-    get:
-      summary: Get list of partners for a person
-      tags:
-        - tbd
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Partner'
-        '401':
-          description: Unauthorized
-      operationId: getPartnersFromPerson
-      description: Get list of partners for a specific person
-  /admin/cns/export:
-    get:
-      summary: Export data
-      tags:
-        - admin
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-      operationId: getData
-      description: ''
-    parameters: [ ]
-  /admin/cns/stat:
-    get:
-      summary: Generate statistics
-      tags:
-        - admin
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-      operationId: getStatistics
-      parameters: [ ]
-    parameters: [ ]
-  '/admin/partner/{idpartner}':
-    get:
-      summary: Manage partners
-      tags:
-        - tbd
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Partner'
-      operationId: getPartner
-      description: get an existing partner
-    post:
-      tags:
-        - tbd
-      summary: ''
-      operationId: addPartner
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Partner'
-        '401':
-          description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Partner'
-      description: Add partner to referential
-    delete:
-      tags:
-        - tbd
-      summary: delete partner
-      operationId: deletePartner
-      responses:
-        '200':
-          description: OK
-      description: Delete an existing partner to referential
-    parameters:
-      - schema:
-          type: string
-        name: idpartner
-        in: path
-        required: true
+                $ref: '#/components/schemas/PersonInfo' 
   '/person/{ssn}/document/{idDocument}/pdf':
     parameters:
       - schema:
@@ -534,10 +380,8 @@ components:
           type: string
           enum:
             - CNS
-            - PARTNER
             - ESANTE
             - MH
-            - DR
             - CNS_AUTO
         startAt:
           type: string
@@ -587,12 +431,13 @@ components:
         status:
           type: string
           enum:
-            - SENT
             - RECEIVED
+            - SENT
+            - REIMBURSEMENT_ASKED
+            - REIMBURSEMENT_SENT
+            - CANCEL_ASKED
             - CANCELED
-            - CANCEL
-            - CANCEL_REPLACE
-            - TO_SEND
+            - CANCEL_REPLACED
           readOnly: true
         docType:
           type: string
@@ -615,6 +460,7 @@ components:
         file:
           type: string
           readOnly: true
+        
     file:
       type: object
       title: zipfile
@@ -690,7 +536,7 @@ components:
       required: true
       schema:
         type: string
-        pattern: '[0-9]{13}'
+        pattern: '\d{13}'
         minLength: 13
         maxLength: 13
         example: '1897010112345'
@@ -703,7 +549,7 @@ components:
         type: string
         minLength: 10
         maxLength: 10
-        pattern: '[0-9]{10}'
+        pattern: '\d{10}'
         example: '6123456789'
       description: practitioner identifier
     idDocument:

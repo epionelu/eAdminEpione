@@ -26,6 +26,8 @@ public class DocumentConsentCheckProxy implements IDocumentService {
 
     IIdentityService identity;
 
+    private static final String ERROR_MESSAGE = "Missing consent to access this document";
+
     @Autowired
     public DocumentConsentCheckProxy(IDocumentService service,
             IConsentVerifier verifier, IIdentityService identity) {
@@ -46,14 +48,14 @@ public class DocumentConsentCheckProxy implements IDocumentService {
     public Optional<Document> getById(UUID id) {
         if ((identity.hasRole(Roles.PATIENT) && !verifier.hasConsent(identity.getName(), ConsentType.ESANTE)) ||
                 identity.hasRole(Roles.ADMIN)) {
-            throw new ForbiddenException("Missing consent to access this document");
+            throw new ForbiddenException(ERROR_MESSAGE);
         }
 
         Optional<Document> res = service.getById(id);
 
         if (identity.hasRole(Roles.PRACTITIONER) && !res.isEmpty()
                 && !isPractitionerAccessValid(res.get())) {
-            throw new ForbiddenException("Missing consent to access this document");
+            throw new ForbiddenException(ERROR_MESSAGE);
         }
 
         return res;
@@ -71,10 +73,9 @@ public class DocumentConsentCheckProxy implements IDocumentService {
     public Optional<Byte[]> getPdfById(UUID id) {
         if ((identity.hasRole(Roles.PATIENT) && !verifier.hasConsent(identity.getName(), ConsentType.ESANTE)) ||
                 identity.hasRole(Roles.ADMIN)) {
-            throw new ForbiddenException("Missing consent to access this document");
+            throw new ForbiddenException(ERROR_MESSAGE);
         }
-        Optional<Byte[]> res = service.getPdfById(id);
-        return res;
+        return service.getPdfById(id);
     }
 
     /**
@@ -95,9 +96,6 @@ public class DocumentConsentCheckProxy implements IDocumentService {
         if (identity.hasRole(Roles.PATIENT) && !verifier.hasConsent(identity.getName(), ConsentType.CNS)) {
             throw new ForbiddenException("Missing CNS consent to send document");
         }
-        if (verifier.hasConsent(document.getSsn(), ConsentType.CNS_AUTO)) {
-            document.setDocumentStatus(DocumentStatus.TO_SEND);
-        }
         return service.save(document);
     }
 
@@ -115,7 +113,7 @@ public class DocumentConsentCheckProxy implements IDocumentService {
             return service.getBySsnAndStatus(ssn, documentStatus);
 
         }
-        throw new ForbiddenException("Missing consent to get these documents");
+        throw new ForbiddenException(ERROR_MESSAGE);
 
     }
 
@@ -123,14 +121,14 @@ public class DocumentConsentCheckProxy implements IDocumentService {
     public Optional<Document> getByFileId(UUID fileId) {
         if ((identity.hasRole(Roles.PATIENT) && !verifier.hasConsent(identity.getName(), ConsentType.ESANTE)) ||
                 identity.hasRole(Roles.ADMIN)) {
-            throw new ForbiddenException("Missing consent to access this document");
+            throw new ForbiddenException(ERROR_MESSAGE);
         }
 
         Optional<Document> res = service.getByFileId(fileId);
 
         if (identity.hasRole(Roles.PRACTITIONER) && !res.isEmpty()
                 && !isPractitionerAccessValid(res.get())) {
-            throw new ForbiddenException("Missing consent to access this document");
+            throw new ForbiddenException(ERROR_MESSAGE);
         }
 
         return res;

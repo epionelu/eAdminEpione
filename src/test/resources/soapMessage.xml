@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Plateforme mySecu Centre commun de la sÃ©curitÃ© sociale
+Environnement de certification
+Correlation-ID: Id-fd6b846334f971d308f7837a-->
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+            <dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="Id-0001669622781847-ffffffff9327beab-2">
+                <dsig:SignedInfo>
+                    <dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                    <dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+                    <dsig:Reference URI="#Id-0001669622781847-ffffffff9327beab-1">
+                        <dsig:Transforms>
+                            <dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                        </dsig:Transforms>
+                        <dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                        <dsig:DigestValue>J9fYaYLUzXeWEkCK/MAaK0qtFzRNUEJL0RoOGCTi8RU=</dsig:DigestValue>
+                    </dsig:Reference>
+                    <dsig:Reference URI="#Id-0001669622781847-ffffffff9327beab-3">
+                        <dsig:Transforms>
+                            <dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                        </dsig:Transforms>
+                        <dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                        <dsig:DigestValue>7oznUKbHQTEOHcvgl5nm410tJUw0Yt78gbGS/a/hO6o=</dsig:DigestValue>
+                    </dsig:Reference>
+                </dsig:SignedInfo>
+                <dsig:SignatureValue>wdK5Q4qUwfQ032Y/RdqVcG7ts67E6K0W1x3mlRaXfRjQSfTv20MoBufCUEsqk3KL
+bk4Za7OOxhFy4fm8ZHBaoU59H1qgPTb2sTV+63gG3gWFrQNBfkRyGVazwJ7mV/ZV
+57H5b4Hv3ccN0d0UwlvO6D7uZ1vQx49JdSxZ2wYNUo+kkfdsXRVHDUrq4a1/XGb9
+JrQUJbDeRpSy35LR5h1KAmKLehXifPuc9w0RtZGiHFWXuE32FAUji7CdkX7P4r/V
+OZ5aHcMxI/lBe2K1o19Gmc/ze0UTcR5kvRT0x6PDvbbMK/ezO3WJtev4f0qO68Mr
+UlYelrctAt5GFEUroJOiHQ==</dsig:SignatureValue>
+                <dsig:KeyInfo Id="Id-0001669622781847-ffffffff9327beab-3">
+                    <dsig:X509Data>
+                        <dsig:X509Certificate>
+            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
+          </dsig:X509Certificate>
+                    </dsig:X509Data>
+                </dsig:KeyInfo>
+            </dsig:Signature>
+        </wsse:Security>
+    </soap:Header>
+    <soap:Body xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="Id-0001669622781847-ffffffff9327beab-1">
+        <mySecu:ResponseInfo xmlns:mySecu="http://ws.mysecu.lu/generic/sync" />
+    </soap:Body>
+</soap:Envelope>

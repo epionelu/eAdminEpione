@@ -7,16 +7,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
+import lombok.extern.slf4j.Slf4j;
 import lu.esante.agence.epione.entity.DocumentEntity;
 import lu.esante.agence.epione.entity.DocumentStatusEntity;
 import lu.esante.agence.epione.entity.DocumentTypeEntity;
 import lu.esante.agence.epione.exception.DocumentFormatException;
+import lu.esante.agence.epione.exception.ForbiddenException;
+import lu.esante.agence.epione.exception.IllegalOperationException;
 import lu.esante.agence.epione.model.Document;
 import lu.esante.agence.epione.model.DocumentStatus;
 import lu.esante.agence.epione.model.DocumentType;
@@ -28,6 +32,7 @@ import lu.esante.agence.epione.service.IDocumentService;
 import lu.esante.agence.epione.structure.AbstractMapper;
 import lu.esante.agence.epione.util.DocumentUtils;
 
+@Slf4j
 public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity>
         implements IDocumentService, IDocumentBatchHelper {
 
@@ -35,6 +40,9 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
 
     protected EnumMap<DocumentType, DocumentTypeEntity> documentTypes = new EnumMap<>(DocumentType.class);
     protected EnumMap<DocumentStatus, DocumentStatusEntity> documentStatuses = new EnumMap<>(DocumentStatus.class);
+
+    @Autowired
+    EntityManager entityManager;
 
     @Autowired
     public DocumentServiceImpl(DocumentRepository repo, DocumentTypeRepository typeRepo,
@@ -73,9 +81,7 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
             return Optional.empty();
         }
         try {
-            Optional<Byte[]> pdf = DocumentUtils.getPdpFromDocument(res.get());
-            return pdf;
-
+            return DocumentUtils.getPdpFromDocument(res.get());
         } catch (JAXBException | UnsupportedEncodingException | SAXException e) {
             throw new DocumentFormatException("Invalid document format");
         }
@@ -127,6 +133,7 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
         doc.setPractitionerLastname(b.getPractitionerLastname());
         doc.setPrice(b.getPrice());
         doc.setMemoireDate(b.getMemoireDate());
+        doc.setMySecuId(b.getMySecuId());
         return doc;
     }
 
@@ -151,28 +158,24 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
         doc.setPractitionerLastname(a.getPractitionerLastname());
         doc.setPrice(a.getPrice());
         doc.setMemoireDate(a.getMemoireDate());
+        doc.setMySecuId(a.getMySecuId());
 
         return doc;
     }
 
     @Override
-    public List<Document> getAll() {
-        return entityToBusiness(repo.getDocumentToSend());
+    public Document acknowledgeSend(Document document, String mySecuId) throws IllegalOperationException {
+        if (document.getMySecuId() != null) {
+            log.error("Trying to override document mysecu id for document %s", document.getId());
+            throw new IllegalOperationException("Trying to override document mysecu id");
+        }
+        updateMySecuIdOnly(document.getId(), mySecuId);
+        updateIfStatusEquals(document, document.getDocumentStatus(), DocumentStatus.SENT);
+
+        return document;
     }
 
     @Override
-    public void acknowledgeSend(Document document) {
-        document.setDocumentStatus(DocumentStatus.SENT);
-        save(document);
-    }
-
-    @Override
-    public void batchChangeStatus(String ssn, DocumentStatus initial, DocumentStatus target) {
-        repo.batchChangeStatus(ssn, documentStatuses.get(initial).getId(), documentStatuses.get(target).getId());
-    }
-
-    @Override
-    @Transactional
     public void cancelDocument(Document oldDoc, Optional<Document> newDoc) {
         // Save the new document if it exists
         if (!newDoc.isEmpty()) {
@@ -181,16 +184,57 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
         }
 
         // Update the status
-        if (oldDoc.getDocumentStatus() == DocumentStatus.SENT) {
-            if (!newDoc.isEmpty()) {
-                oldDoc.setDocumentStatus(DocumentStatus.CANCEL_REPLACE);
-            } else {
-                oldDoc.setDocumentStatus(DocumentStatus.CANCEL);
-            }
+        List<DocumentStatus> allowedStatus = List.of(DocumentStatus.RECEIVED, DocumentStatus.SENT,
+                DocumentStatus.REIMBURSEMENT_ASKED, DocumentStatus.REIMBURSEMENT_SENT);
+        if (allowedStatus.contains(oldDoc.getDocumentStatus())) {
+            oldDoc.setDocumentStatus(DocumentStatus.CANCEL_ASKED);
         } else {
-            oldDoc.setDocumentStatus(DocumentStatus.CANCELED);
+            throw new ForbiddenException("This document haven't been acknowledged by the CNS yet. Retry later.");
         }
         // Persist the old document state
         save(oldDoc);
     }
+
+    @Override
+    public List<Document> getAllReceived() {
+        return entityToBusiness(repo.getDocumentToSend());
+    }
+
+    @Override
+    public List<Document> getAllReimbursementAsked() {
+        return entityToBusiness(repo.getReimbursementAskedDocuments());
+    }
+
+    @Override
+    public List<Document> getAllCancelationAsked() {
+        return entityToBusiness(repo.getCancelationAskedDocuments());
+    }
+
+    @Override
+    public void updateCnsAuto() {
+        repo.cnsAutoApply();
+
+    }
+
+    @Override
+    public void updateMySecuIdOnly(UUID documentId, String mySecuId) {
+        if (mySecuId != null) {
+            repo.updateMySecuIdOnly(mySecuId, documentId);
+        }
+    }
+
+    @Override
+    public void updateIfStatusEquals(Document document, DocumentStatus oldStatus, DocumentStatus newStatus) {
+        UUID oldStatusId = documentStatuses.get(oldStatus).getId();
+        UUID newStatusId = documentStatuses.get(newStatus).getId();
+
+        repo.updateIfStatusEquals(document.getId(), oldStatusId, newStatusId);
+
+    }
+
+    @Override
+    public Document saveHelper(Document document) {
+        return save(document);
+    }
+
 }

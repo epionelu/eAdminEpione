@@ -94,10 +94,9 @@ public class MySecuClient {
 
     }
 
-    public String sendDocument(String doc, String assertion)
+    public String sendDocument(String doc, String assertion, String msgId)
             throws MySecuInvalidTemplateRequestException, MySecuOperationException, MySecuSignatureException {
-        String envelope;
-        envelope = generateBusinessXmlRequest(doc, assertion);
+        String envelope = generateBusinessXmlRequest(doc, assertion, msgId);
         return callWebService(envelope, config.getService().getBusinessEndpoint());
 
     }
@@ -160,7 +159,7 @@ public class MySecuClient {
         return MySecuUtils.signXmlFile(template, privateKey, publicKey);
     }
 
-    private String generateBusinessXmlRequest(String doc, String assertion)
+    private String generateBusinessXmlRequest(String doc, String assertion, String msgId)
             throws MySecuInvalidTemplateRequestException, MySecuSignatureException {
         Optional<String> optTemplate = helper.getTemplate(MySecuTemplateEnum.BUSINESS);
         if (optTemplate.isEmpty()) {
@@ -169,6 +168,7 @@ public class MySecuClient {
                             MySecuTemplateEnum.BUSINESS.toString()).toString());
         }
         String template = optTemplate.get()
+                .replace(TemplateConstantes.TEMPLATE_VAR_MSG_ID, msgId)
                 .replace(TemplateConstantes.TEMPLATE_VAR_ServiceMetier_BinarySecurityToken, assertion)
                 .replace(TemplateConstantes.TEMPLATE_VAR_ServiceMetier_MH, doc)
                 .replace(TemplateConstantes.TEMPLATE_VAR_ServiceMetier_IdBinarySecurityToken,
@@ -222,7 +222,6 @@ public class MySecuClient {
             BufferedInputStream errorStream = null;
             BufferedInputStream responseStream = null;
             try {
-
                 int rcClassifier = con.getResponseCode() / 100;
                 if (rcClassifier < 2 || rcClassifier > 3) {
                     errorStream = new BufferedInputStream(con.getErrorStream());

@@ -1,10 +1,14 @@
 package lu.esante.agence.epione.auth;
 
-import lombok.extern.slf4j.Slf4j;
-import lu.esante.agence.epione.auth.exception.AuthenticationException;
-import lu.esante.agence.epione.config.EpioneSettings;
-import lu.esante.agence.epione.service.IMpiService;
-import lu.esante.agence.epione.service.ITeamVerifier;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -14,17 +18,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import lu.esante.agence.epione.auth.exception.AuthenticationException;
+import lu.esante.agence.epione.config.EpioneSettings;
+import lu.esante.agence.epione.service.IMpiService;
+import lu.esante.agence.epione.service.ITeamVerifier;
 
 @Component
 @Order(1)
-@Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired

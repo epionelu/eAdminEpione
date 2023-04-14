@@ -12,4 +12,3 @@ INSERT INTO document_status(code, description) VALUES ('SENT', 'Le document à �
 INSERT INTO document_status(code, description) VALUES ('CANCEL', 'Le document à été annulé');
 INSERT INTO document_status(code, description) VALUES ('CANCELED', 'Le document à été annulé');
 INSERT INTO document_status(code, description) VALUES ('CANCEL_REPLACE', 'Le document à été annulé et remplacé');
-

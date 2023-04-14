@@ -12,7 +12,7 @@
 			<xs:documentation>Code pays</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:length value="2"/>
+			<xs:length value="2" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="T_CodePostal">
@@ -20,8 +20,8 @@
 			<xs:documentation>Code postal</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:minLength value="1"/>
-			<xs:maxLength value="15"/>
+			<xs:minLength value="1" />
+			<xs:maxLength value="15" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="T_NumeroTelephone">
@@ -29,7 +29,7 @@
 			<xs:documentation>Type d'un numéro téléphone ou fax</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:maxLength value="24"/>
+			<xs:maxLength value="24" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:element name="memoireHonoraire" type="T_MemoireHonoraires">
@@ -47,7 +47,7 @@
 					<xs:documentation>Numéro Accident</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_NumeroAccident"/>
+					<xs:restriction base="T_NumeroAccident" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="dateAccident" minOccurs="0">
@@ -55,7 +55,7 @@
 					<xs:documentation>Date Accident</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:date"/>
+					<xs:restriction base="xs:date" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -71,7 +71,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="6"/>
+						<xs:maxLength value="6" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -81,21 +81,21 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="1"/>
+						<xs:length value="1" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="suffixActe" minOccurs="0" maxOccurs="unbounded">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="1"/>
+						<xs:length value="1" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="libelle" minOccurs="0">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="35"/>
+						<xs:maxLength value="35" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -112,7 +112,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -122,7 +122,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -132,7 +132,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="20"/>
+						<xs:maxLength value="20" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -142,7 +142,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="80"/>
+						<xs:maxLength value="80" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -151,7 +151,7 @@
 					<xs:documentation>Code ISO pays</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePays"/>
+					<xs:restriction base="T_CodePays" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="codePostal" minOccurs="0">
@@ -159,7 +159,7 @@
 					<xs:documentation>Code postale de l'adresse</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePostal"/>
+					<xs:restriction base="T_CodePostal" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="localite" minOccurs="0">
@@ -168,8 +168,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="80"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="80" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -180,8 +180,8 @@
 			<xs:documentation>Format pour un code Fournisseur à 8 positions</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:int">
-			<xs:maxInclusive value="99999999"/>
-			<xs:minInclusive value="10000000"/>
+			<xs:maxInclusive value="99999999" />
+			<xs:minInclusive value="10000000" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="T_Controles">
@@ -191,22 +191,22 @@
 		<xs:sequence>
 			<xs:element name="polytraumatisme" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="xs:boolean"/>
+					<xs:restriction base="xs:boolean" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="protheseProvisoire" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="xs:boolean"/>
+					<xs:restriction base="xs:boolean" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="nouvelleGrossesse" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="xs:boolean"/>
+					<xs:restriction base="xs:boolean" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="codeMedecinOperateur" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="T_CodePrestataire"/>
+					<xs:restriction base="T_CodePrestataire" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -222,7 +222,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="36"/>
+						<xs:length value="36" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -234,18 +234,18 @@
 			<xs:element name="patient">
 				<xs:complexType>
 					<xs:complexContent>
-						<xs:extension base="T_Patient"/>
+						<xs:extension base="T_Patient" />
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="assure" type="T_Assure"/>
+			<xs:element name="assure" type="T_Assure" />
 			<xs:element name="numeroMemoireHonoraires" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Référence Externe du mémoire d'honoraire</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -254,7 +254,7 @@
 					<xs:documentation>Date du mémoire d'honoraires</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:date"/>
+					<xs:restriction base="xs:date" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="codeHopital" minOccurs="0">
@@ -263,8 +263,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="T_CodePrestataire">
-						<xs:minInclusive value="10000000"/>
-						<xs:maxInclusive value="99999999"/>
+						<xs:minInclusive value="10000000" />
+						<xs:maxInclusive value="99999999" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -274,8 +274,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="T_CodePrestataire">
-						<xs:minInclusive value="10000000"/>
-						<xs:maxInclusive value="99999999"/>
+						<xs:minInclusive value="10000000" />
+						<xs:maxInclusive value="99999999" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -285,7 +285,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="100"/>
+						<xs:minLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -295,7 +295,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="25"/>
+						<xs:maxLength value="25" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -305,7 +305,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="25"/>
+						<xs:maxLength value="25" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -321,7 +321,7 @@
 					<xs:documentation>Numéro de la page</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:integer"/>
+					<xs:restriction base="xs:integer" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -331,7 +331,7 @@
 			<xs:documentation>Format d'identifiant unique pour un patient</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:decimal">
-			<xs:totalDigits value="13"/>
+			<xs:totalDigits value="13" />
 			<xs:pattern value="[123456789]\p{Nd}{12}">
 				<xs:annotation>
 					<xs:documentation>Premier chiffre (1 à 9) suivi de 12 chiffres (0 à 9)</xs:documentation>
@@ -350,8 +350,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="2500"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="2500" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -361,8 +361,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="200"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="200" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -383,14 +383,14 @@
 					<xs:documentation>Détail du mémoire d'honoraires</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="paiement" type="T_Paiement"/>
-			<xs:element name="libre" type="T_Libre"/>
-			<xs:element name="footer" type="T_Footer"/>
-			<xs:element name="indicationsSupplementaires" type="T_Controles"/>
+			<xs:element name="paiement" type="T_Paiement" />
+			<xs:element name="libre" type="T_Libre" />
+			<xs:element name="footer" type="T_Footer" />
+			<xs:element name="indicationsSupplementaires" type="T_Controles" />
 			<xs:element name="signature" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence minOccurs="0">
-						<xs:any namespace="##other" processContents="lax"/>
+						<xs:any namespace="##other" processContents="lax" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -399,7 +399,7 @@
 					<xs:documentation>Document .pdf</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:base64Binary"/>
+					<xs:restriction base="xs:base64Binary" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -409,7 +409,7 @@
 			<xs:documentation>Format pour un montant</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:decimal">
-			<xs:fractionDigits value="2"/>
+			<xs:fractionDigits value="2" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="T_NumeroAccident">
@@ -417,7 +417,7 @@
 			<xs:documentation>Format pour un numéro accident</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:pattern value="[UL]\d{9}"/>
+			<xs:pattern value="[UL]\d{9}" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="T_Paiement">
@@ -427,22 +427,22 @@
 		<xs:sequence>
 			<xs:element name="sousTotal">
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="report" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="acompteADeduire" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="aPayer">
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="devise">
@@ -450,17 +450,17 @@
 					<xs:documentation>Code devise alphabétique selon ISO 4217 (ex. EUR)</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_Devise"/>
+					<xs:restriction base="T_Devise" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="acquitte">
 				<xs:simpleType>
-					<xs:restriction base="xs:boolean"/>
+					<xs:restriction base="xs:boolean" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="dateAcquittement" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="xs:date"/>
+					<xs:restriction base="xs:date" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -476,7 +476,7 @@
 						<xs:documentation>Matricule du patient</xs:documentation>
 					</xs:annotation>
 					<xs:simpleType>
-						<xs:restriction base="T_IdentifiantUnique"/>
+						<xs:restriction base="T_IdentifiantUnique" />
 					</xs:simpleType>
 				</xs:element>
 				<xs:element name="dateNaissance">
@@ -484,7 +484,7 @@
 						<xs:documentation>Date naissance du patient</xs:documentation>
 					</xs:annotation>
 					<xs:simpleType>
-						<xs:restriction base="xs:date"/>
+						<xs:restriction base="xs:date" />
 					</xs:simpleType>
 				</xs:element>
 			</xs:choice>
@@ -493,7 +493,7 @@
 					<xs:documentation>Caisse principale: CNS / CMFEP / CMFEC / EMCFL / Autre</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CaissePrincipale"/>
+					<xs:restriction base="T_CaissePrincipale" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="nom" minOccurs="0">
@@ -502,7 +502,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="150"/>
+						<xs:maxLength value="150" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -512,7 +512,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -533,7 +533,7 @@
 					<xs:documentation>Date Début</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:date"/>
+					<xs:restriction base="xs:date" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="heureDebut" minOccurs="0">
@@ -541,7 +541,7 @@
 					<xs:documentation>Heure Début</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:time"/>
+					<xs:restriction base="xs:time" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="dateFin" minOccurs="0">
@@ -549,7 +549,7 @@
 					<xs:documentation>Date Fin</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:date"/>
+					<xs:restriction base="xs:date" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="heureFin" minOccurs="0">
@@ -557,7 +557,7 @@
 					<xs:documentation>Heure Fin</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:time"/>
+					<xs:restriction base="xs:time" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -572,7 +572,7 @@
 					<xs:documentation>Code médecin (prestataire facturier)</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePrestataire"/>
+					<xs:restriction base="T_CodePrestataire" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="nom">
@@ -581,7 +581,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="150"/>
+						<xs:maxLength value="150" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -591,7 +591,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -601,7 +601,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="50"/>
+						<xs:maxLength value="50" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -615,7 +615,7 @@
 					<xs:documentation>Numéro téléphone</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_NumeroTelephone"/>
+					<xs:restriction base="T_NumeroTelephone" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="numeroFax" minOccurs="0">
@@ -623,7 +623,7 @@
 					<xs:documentation>Numéro fax</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_NumeroTelephone"/>
+					<xs:restriction base="T_NumeroTelephone" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="email" minOccurs="0">
@@ -632,7 +632,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -648,7 +648,7 @@
 					<xs:documentation>Numéro de la ligne</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="xs:integer"/>
+					<xs:restriction base="xs:integer" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="codeH" minOccurs="0">
@@ -656,7 +656,7 @@
 					<xs:documentation>Code H / 1 = hospitalisation 1ère classe / 2 = hospitalisation deuxième classe / A = Ambulatoire</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodeHopital"/>
+					<xs:restriction base="T_CodeHopital" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="lieu" minOccurs="0">
@@ -665,7 +665,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="2"/>
+						<xs:length value="2" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -674,7 +674,7 @@
 					<xs:documentation>Code médecin exécutant</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePrestataire"/>
+					<xs:restriction base="T_CodePrestataire" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="periode" type="T_Periode">
@@ -688,7 +688,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="3"/>
+						<xs:maxLength value="3" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -703,8 +703,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:integer">
-						<xs:minInclusive value="1"/>
-						<xs:maxInclusive value="99"/>
+						<xs:minInclusive value="1" />
+						<xs:maxInclusive value="99" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -713,7 +713,7 @@
 					<xs:documentation>Montant brut</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="partPersonelle" minOccurs="0">
@@ -721,7 +721,7 @@
 					<xs:documentation>Montant de la part personnelle</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_Montant"/>
+					<xs:restriction base="T_Montant" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="codePrescripteur" minOccurs="0">
@@ -729,7 +729,7 @@
 					<xs:documentation>Code prescripteur</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePrestataire"/>
+					<xs:restriction base="T_CodePrestataire" />
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="numeroTitreOrdonnance" minOccurs="0">
@@ -738,7 +738,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:length value="36"/>
+						<xs:length value="36" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -748,8 +748,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="20"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="20" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -759,8 +759,8 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:minLength value="1"/>
-						<xs:maxLength value="2"/>
+						<xs:minLength value="1" />
+						<xs:maxLength value="2" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -769,7 +769,7 @@
 					<xs:documentation>code Opérateur</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
-					<xs:restriction base="T_CodePrestataire"/>
+					<xs:restriction base="T_CodePrestataire" />
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>
@@ -779,7 +779,7 @@
 			<xs:documentation>Type pour une devise</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:length value="3"/>
+			<xs:length value="3" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="T_CaissePrincipale">
@@ -787,7 +787,7 @@
 			<xs:documentation>Type pour la caisse principale: CNS / CMFEP / CMFEC / EMCFL / Autre</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:maxLength value="12"/>
+			<xs:maxLength value="12" />
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="T_Assure">
@@ -798,7 +798,7 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="150"/>
+						<xs:maxLength value="150" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -808,11 +808,11 @@
 				</xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:maxLength value="100"/>
+						<xs:maxLength value="100" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="adresse" type="T_Adresse"/>
+			<xs:element name="adresse" type="T_Adresse" />
 		</xs:sequence>
 	</xs:complexType>
 	<xs:simpleType name="T_CodeHopital">
@@ -820,9 +820,9 @@
 			<xs:documentation>Type de la classe hôpital</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="A"/>
-			<xs:enumeration value="1"/>
-			<xs:enumeration value="2"/>
+			<xs:enumeration value="A" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

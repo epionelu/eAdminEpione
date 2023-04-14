@@ -41,4 +41,5 @@ public enum TemplateConstantes {
     public static String TEMPLATE_VAR_ServiceMetier_ModelUIDRequestInfo = "TEMPLATE_VAR_ServiceMetier_ModelUIDRequestInfo";
 
     public static String TEMPLATE_VAR_Annulation_BinarySecurityToken = "TEMPLATE_VAR_Annulation_BinarySecurityToken";
+    public static String TEMPLATE_VAR_MSG_ID = "INF_MSG_ID";
 }
