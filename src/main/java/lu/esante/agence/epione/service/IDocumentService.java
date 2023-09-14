@@ -3,6 +3,7 @@ package lu.esante.agence.epione.service;
 import lu.esante.agence.epione.model.Document;
 import lu.esante.agence.epione.model.DocumentStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +20,8 @@ public interface IDocumentService {
     Optional<Document> getByFileId(UUID fileId);
 
     List<Document> getAvailableDocuments(String ssn);
+
+    List<Document> getAvailableDocumentsFromPractitioner(LocalDate createdFrom, LocalDate createdTo, String ehealthId);
 
     /**
      * Put a document in the correct cancelation state *

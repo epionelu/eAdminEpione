@@ -86,7 +86,38 @@ paths:
               type: string
               format: binary
         description: Body contains zip file. zip file must be compliant with CNS specification of MH
-  
+  '/practitioner/{eHealthId}/documents':
+    parameters:
+      - $ref: '#/components/parameters/eHealthId'
+      - in: query
+        name: createdFrom
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: createdTo
+        schema:
+          type: string
+          format: date
+    get:
+      summary: Get documents list
+      tags:
+        - document
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+      operationId: getDocumentsFromPractitioner
+      description: Get documents list of a practitioner. Only practitioner can do it.
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+
   '/person/{ssn}/consents':
     parameters:
       - $ref: '#/components/parameters/ssn'

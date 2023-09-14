@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +23,9 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, UUID> 
 
     @Query(value = "select * from document inner join document_status on document.document_status=document_status.id where (document_status.code = 'RECEIVED' or (document.created_at < now() + interval '1 year' and document_status.code <> 'RECEIVED' )) and document.ssn=:ssn", nativeQuery = true)
     List<DocumentEntity> getAvailableDocuments(@Param("ssn") String ssn);
+
+    @Query(value = "select * from document inner join document_status on document.document_status=document_status.id where DATE(document.created_at) >= :createdFrom and DATE(document.created_at) <= :createdTo and document.ehealth_id=:ehealth_id", nativeQuery = true)
+    List<DocumentEntity> getAvailableDocumentsFromPractitioner(@Param("createdFrom") LocalDate createdFrom, @Param("createdTo") LocalDate createdTo, @Param("ehealth_id") String ehealthId);
 
     @Query(value = "select document.* from document inner join document_status on document.document_status = document_status.id where document_status.code = 'REIMBURSEMENT_ASKED';", nativeQuery = true)
     List<DocumentEntity> getReimbursementAskedDocuments();

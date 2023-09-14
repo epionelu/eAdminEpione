@@ -10,6 +10,7 @@ import lu.esante.agence.epione.service.IDocumentService;
 import lu.esante.agence.epione.service.IIdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -149,6 +150,15 @@ public class DocumentConsentCheckProxy implements IDocumentService {
 
         }
         throw new ForbiddenException("Missing consent to read these documents");
+    }
+
+    @Override
+    public List<Document> getAvailableDocumentsFromPractitioner(LocalDate createdFrom, LocalDate createdTo, String ehealthId) {
+        if (identity.hasRole(Roles.PRACTITIONER)) {
+            return service.getAvailableDocumentsFromPractitioner(createdFrom, createdTo, ehealthId);
+        }
+
+        throw new ForbiddenException(ERROR_MESSAGE);
     }
 
     @Override

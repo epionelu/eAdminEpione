@@ -1,6 +1,7 @@
 package lu.esante.agence.epione.service.impl.document;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
@@ -103,6 +105,13 @@ public class DocumentServiceImpl extends AbstractMapper<Document, DocumentEntity
     public List<Document> getAvailableDocuments(String ssn) {
 
         List<DocumentEntity> res = repo.getAvailableDocuments(ssn);
+        return entityToBusiness(res);
+    }
+
+    @Override
+    public List<Document> getAvailableDocumentsFromPractitioner(LocalDate createdFrom, LocalDate createdTo, String ehealthId) {
+
+        List<DocumentEntity> res = repo.getAvailableDocumentsFromPractitioner(createdFrom, createdTo, ehealthId);
         return entityToBusiness(res);
     }
 

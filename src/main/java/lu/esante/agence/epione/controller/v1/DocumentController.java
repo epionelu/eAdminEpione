@@ -33,6 +33,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -203,6 +204,18 @@ public class DocumentController extends V1AbstractController implements Document
         List<DocumentDto> res = docs.stream().map(this::businesstoDtoWithoutFile).collect(Collectors.toList());
         return new ResponseEntity<>(res, HttpStatus.OK);
 
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('PRACTITIONER')")
+    public ResponseEntity<List<DocumentDto>> _getDocumentsFromPractitioner(String eHealthId, Optional<LocalDate> createdFrom, Optional<LocalDate> createdTo, Optional<Integer> page, Optional<Integer> size) throws Exception {
+        if (identity.getEHealthId() == null || !identity.getEHealthId().equals(eHealthId)) {
+            throw new ForbiddenException("Invalid eHealthId");
+        }
+
+            List<Document> docs = service.getAvailableDocumentsFromPractitioner(createdFrom.get(), createdTo.get(), eHealthId);
+            List<DocumentDto> res = docs.stream().map(this::businesstoDtoWithoutFile).collect(Collectors.toList());
+            return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @Override

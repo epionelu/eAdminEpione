@@ -1,5 +1,6 @@
 package lu.esante.agence.epione.service.impl.document;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,6 +79,13 @@ public class DocumentAuditProxy implements IDocumentService {
     public List<Document> getAvailableDocuments(String ssn) {
         List<Document> res = service.getAvailableDocuments(ssn);
         trace.write(ENTITY_TYPE, "LIST AVAILABLE DOCS");
+        return res;
+    }
+
+    @Override
+    public List<Document> getAvailableDocumentsFromPractitioner(LocalDate createdFrom, LocalDate createdTo, String ehealthId) {
+        List<Document> res = service.getAvailableDocumentsFromPractitioner(createdFrom, createdTo, ehealthId);
+        trace.write(ENTITY_TYPE, "LIST AVAILABLE DOCS FROM PRACTITIONER");
         return res;
     }
 

@@ -11,7 +11,7 @@
     </parent>
     <groupId>lu.esante.agence</groupId>
     <artifactId>epione</artifactId>
-    <version>2.2.0</version>
+    <version>2.4.0</version>
     <name>epione</name>
     <description>epione project</description>
     <properties>
